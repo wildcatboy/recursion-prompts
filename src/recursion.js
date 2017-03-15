@@ -5,31 +5,84 @@
 // Example:  5! = 5 x 4 x 3 x 2 x 1 = 120
 // factorial(5);  // 120
 var factorial = function(n) {
+  if (n<0){
+    return null;
+  }
+  if(n === 1 || n === 0){
+    return 1;
+  }
+  return n*(factorial(n - 1))
 };
 
 // 2. Compute the sum of an array of integers.
 // Example:  sum([1, 2, 3, 4, 5, 6]);  // 21
 var sum = function(array) {
+  array.slice(0)
+  if (array.length < 1){
+    return 0;
+  }
+  return array[0] + sum(array.slice(1));
+
 };
 
 // 3. Sum all numbers in an array containing nested arrays.
 // Example: arraySum([1,[2,3],[[4]],5]); // 15
 var arraySum = function(array) {
+  if (array.length < 1){
+    return 0;
+  }
+  if (Array.isArray(array[0])){
+    return arraySum(array[0].concat(array.slice(1)));
+  }
+  return array[0] + arraySum(array.slice(1));
 };
 
 // 4. Check if a number is even.
 var isEven = function(n) {
+  if (n< 0){
+    n = Math.abs(n);
+  }
+  if(n === 0){
+    return true;
+  }
+  if(n === 1){
+    return false;
+  }
+  return isEven(n -= 2);
 };
 
 // 5. Sum all integers below a given integer.
 // sumBelow(10); // 45
 // sumBelow(7); // 21
 var sumBelow = function(n) {
+  if (n === 0){
+    return 0;
+  }
+  if (n > 0){
+  return n += sumBelow(n -= 1) - 1;
+}
+return n += sumBelow(n += 1) + 1;
 };
 
 // 6. Get the integers in range (x, y).
 // Example:  range(2, 9);  // [3, 4, 5, 6, 7, 8]
-var range = function(x, y) {
+var range = function(x, y, arr) {
+  arr = arr || [];
+  if(x === y){
+    return arr;
+  }
+
+  arr.push(x)
+  if (y<x){
+      if(y + 1 === x){
+        return arr.slice(1)
+      }
+      return range(x - 1, y, arr);
+  }
+  if (x === y - 1){
+    return arr.slice(1);
+  }
+  return range(x+1, y, arr);
 };
 
 // 7. Compute the exponent of a number.
@@ -49,6 +102,11 @@ var powerOfTwo = function(n) {
 
 // 9. Write a function that accepts a string a reverses it.
 var reverse = function(string) {
+    if (string === "") {
+        return "";
+    } else {
+        return reverse(string.slice(1)) + string.charAt(0);
+    }
 };
 
 // 10. Write a function that determines if a string is a palindrome.
@@ -87,39 +145,97 @@ var gcd = function(x, y) {
 // compareStr('', '') // true
 // compareStr('tomato', 'tomato') // true
 var compareStr = function(str1, str2) {
+  console.log(str1, str2)
+  if(str1 === "" && str2 == ""){
+    return true;
+  }
+  console.log(str1.charAt(0), str2.charAt(0));
+  if(str1.charAt(0) === str2.charAt(0)){
+    return compareStr(str1.slice(1), str2.slice(1));
+  } else {
+    console.log("FALSE");
+    return false;
+  }
+  return false;
 };
 
 // 16. Write a function that accepts a string and creates an array where each letter
 // occupies an index of the array.
 var createArray = function(str){
+  var str = str.slice(0);
+  var arr = Array.from(arguments)[1] || [];
+  if(str.length === 0){
+    return arr;
+  }
+  arr.push(str[0]);
+  return createArray(str.slice(1), arr);
 };
 
 // 17. Reverse the order of an array
 var reverseArr = function (array) {
+  var newArray = Array.from(arguments)[1] || []
+  var array = array.slice(0);
+  if (array.length === 0){
+    return newArray;
+  }
+  newArray.unshift(array[0]);
+  return reverseArr(array.slice(1), newArray)
 };
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
 var buildList = function(value, length) {
+  var newArray = Array.from(arguments)[2] || []
+  if(newArray.length === length){
+    return newArray;
+  }
+  newArray.push(value);
+  return buildList(value, length, newArray)
 };
 
 // 19. Count the occurence of a value inside a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
 // countOccurrence([2,'banana',4,4,1,'banana'], 'banana') // 2
 var countOccurrence = function(array, value) {
+  var count = Array.from(arguments)[2] || 0
+  if (array.length === 0){
+    return count;
+  }
+  if(array[0] === value){
+    count++
+  }
+  return countOccurrence(array.slice(1), value, count);
 };
 
 // 20. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
 var rMap = function(array, callback) {
-};
+    array = array.slice(0);
+    var index = Array.from(arguments)[2] || 0;
+    var result = Array.from(arguments)[3] || [];
+    if(result.length === array.length){
+      return result;
+    }
+    result.push(callback(array[index], index, array));
+    return rMap(array, callback, ++index, result);
+  };
+
 
 // 21. Write a function that counts the number of times a key occurs in an object.
 // var testobj = {'e': {'x':'y'}, 't':{'r': {'e':'r'}, 'p': {'y':'r'}},'y':'e'};
 // countKeysInObj(testobj, 'r') // 1
 // countKeysInObj(testobj, 'e') // 2
 var countKeysInObj = function(obj, key) {
+  var count = Array.from(arguments)[2] || 0;
+  for(var mysteryKey in obj){
+    if (typeof obj[mysteryKey] === "object"){
+      count += countKeysInObj(obj[mysteryKey], mysteryKey, count);
+    } else if (mysteryKey === key){
+        count++;
+      }
+  }
+  return count;
 };
 
 // 22. Write a function that counts the number of times a value occurs in an object.
@@ -127,6 +243,7 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(testobj, 'r') // 2
 // countValuesInObj(testobj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+
 };
 
 // 23. Find all keys in an object (and nested objects) by a provided name and rename
@@ -176,6 +293,18 @@ var nestedEvenSum = function(obj) {
 // 29. Flatten an array containing nested arrays.
 // Example: flatten([1,[2],[3,[[4]]],5]); // [1,2,3,4,5]
 var flatten = function(arrays) {
+  debugger;
+  var result = Array.from(arguments)[1] || [];
+  if(arrays.length === 0){
+    return result;
+  }
+  if(Array.isArray(arrays[0])){
+    return flatten(arrays[0], result);
+  } else {
+    result.push(arrays[0]);
+    return flatten(arrays.slice(1), result);
+  }
+  return result;
 };
 
 // 30. Given a string, return an object containing tallies of each letter.
